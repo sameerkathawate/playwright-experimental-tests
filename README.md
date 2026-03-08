@@ -1,15 +1,15 @@
 # Playwright Experimental Tests
 
-## Books Scraper
+## URL Scraper Utility
 
-A web scraper that extracts book data from books.toscrape.com using Playwright.
+A reusable web scraper utility using Playwright. You can pass any URL and it will crawl pages from the same origin.
 
 ### Features
 
-- Scrapes books from specific categories (Travel, Mystery)
-- Extracts book details including title, price, and availability
-- Handles pagination automatically
-- Saves results to JSON format
+- Accepts any start URL
+- Crawls same-origin links up to a max page limit
+- Extracts page title, h1, description, and links
+- Saves JSON output under `output/`
 
 ### Installation
 
@@ -22,20 +22,25 @@ npm install
 Run the scraper:
 
 ```bash
-node tools/scrape-books.js
+node --experimental-default-type=module tools/scrape-books.js <url> [outputFileName] [maxPages]
 ```
 
-The output will be saved to `output/books-some.json`.
+Examples:
+
+```bash
+node --experimental-default-type=module tools/scrape-books.js https://books.toscrape.com/
+node --experimental-default-type=module tools/scrape-books.js https://books.toscrape.com/ books-some.json 5
+```
+
+Output is always written under `output/`.
 
 ### Configuration
 
-You can modify the following constants in `tools/scrape-books.js`:
+You can modify these defaults in `tools/scrape-books.js`:
 
-- `ALLOWED_CATEGORIES`: Set of categories to scrape (default: Travel, Mystery)
-- `GET_DETAILS`: Whether to visit individual product pages (default: true)
-- `NAV_TIMEOUT`: Navigation timeout in ms (default: 60000)
-- `PAGE_DELAY_MS`: Delay between pagination (default: 150)
-- `PRODUCT_DELAY_MS`: Delay between product details (default: 40)
+- `MAX_PAGES_DEFAULT`: Max pages to crawl when not provided on CLI
+- `NAV_TIMEOUT`: Navigation timeout in ms
+- `ACT_TIMEOUT`: Action timeout in ms
 
 ### Output Format
 
@@ -43,15 +48,14 @@ You can modify the following constants in `tools/scrape-books.js`:
 {
   "origin": "https://books.toscrape.com/",
   "crawledAt": "2026-03-07T...",
-  "categories": [...],
-  "products": [
+  "pageCount": 3,
+  "pages": [
     {
-      "category": "Travel",
-      "title": "Book Title",
       "url": "https://...",
-      "price": "£50.10",
-      "availability": "In stock",
-      "locator": "getByRole('link', { name: \"Book Title\" })"
+      "title": "Page Title",
+      "h1": "Heading",
+      "description": "Meta description",
+      "links": []
     }
   ]
 }

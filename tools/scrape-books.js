@@ -101,15 +101,15 @@ async function scrapeAllowed() {
     }
 
     // Save results
-    await fs.mkdir('fixtures', { recursive: true });
+    await fs.mkdir('output', { recursive: true });
     const out = {
       origin: BASE,
       crawledAt: new Date().toISOString(),
       categories,
       products
     };
-    await fs.writeFile('fixtures/books-some.json', JSON.stringify(out, null, 2), 'utf8');
-    console.log(`Saved ${categories.length} categories, ${products.length} products -> fixtures/books-some.json`);
+    await fs.writeFile('output/books-some.json', JSON.stringify(out, null, 2), 'utf8');
+    console.log(`Saved ${categories.length} categories, ${products.length} products -> output/books-some.json`);
   } finally {
     await page.close().catch(() => {});
     await browser.close().catch(() => {});
